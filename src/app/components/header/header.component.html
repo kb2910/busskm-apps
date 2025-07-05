@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-toolbar class="custom-toolbar">
+    <ion-buttons slot="start" *ngIf="showBackButton">
+      <ion-button (click)="goBack()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title class="logo-title">
+      <img src="assets/splash-dark.png" alt="Logo" />
+    </ion-title>
+
+    <ion-buttons slot="end" *ngIf="showBackButton">
+      <ion-button>
+        <ion-icon name="menu-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>

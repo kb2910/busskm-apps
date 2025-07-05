@@ -1,0 +1,31 @@
+.custom-toolbar {
+  --background: #e91e63;
+  --color: white;
+  height: 60px;
+  border-bottom-left-radius:12px;
+  border-bottom-right-radius:12px;
+
+  ion-title {
+    text-align: center;
+  }
+
+  img {
+    height: 28px;
+  }
+}
+
+.status-alert {
+  --background: #f8f8f8;
+
+  ion-icon {
+    font-size: 10px;
+  }
+
+  ion-label {
+    font-size: 14px;
+  }
+
+  ion-button {
+    margin-left: auto;
+  }
+}
