@@ -2,9 +2,32 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+
+/****************************************************/
+//SERVIDOR LOCAL//
+export const dominIamge = 'http://localhost:4200/'
+//export const domin = 'https://apibuskm.bioonix.com'
+//export const socket = 'https://api.quality.bioonix.com'
+/****************************************************/
+
+/****************************************************/
+//SERVIDOR LOCAL// 
+//export const dominIamge = 'https://bestpadelranking.com/qa/'
+export const domin = 'https://apibuskm.bioonix.com'
+export const socket = 'https://api.quality.bioonix.com'
+/****************************************************/
+
+/****************************************************/
+//SERVIDOR DEV// 
+//export const dominIamge = 'https://padel.bioonix.com/'
+//export const domin = 'http://localhost:3000'
+//export const ip = 'http://localhost:3000'
+
+
 export const environment = {
   production: false,
-  API_URL: 'http://localhost/restAPI/'
+  API_URL: domin,
+  API_SOCKET: socket
 };
 
 /*

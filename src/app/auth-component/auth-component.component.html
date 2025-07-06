@@ -11,9 +11,13 @@
       </ion-item>
 
       <ion-item lines="none" class="custom-item">
-        <ion-input formControlName="password" type="password" placeholder="Contraseña"> <ion-input-password-toggle
-            slot="end"></ion-input-password-toggle></ion-input>
+        <ion-input [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Contraseña">
+        </ion-input>
+        <ion-button fill="clear" slot="end" size="small" (click)="togglePassword()">
+          <ion-icon [name]="showPassword ? 'eye-off' : 'eye'"></ion-icon>
+        </ion-button>
       </ion-item>
+
 
       <ion-button expand="block" class="btn-login" (click)="login()">Continuar</ion-button>
 

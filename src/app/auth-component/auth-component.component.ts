@@ -14,6 +14,9 @@ export class AuthComponentComponent implements OnInit {
   screen: 'signin' | 'signup' | 'forget' = 'signin';
   formData: FormGroup;
   isLoading: boolean = false;
+  showPassword = false;
+
+
   constructor(private fb: FormBuilder, private auth: AuthService, private router: Router, private toastController: ToastController) {
     this.formData = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -28,26 +31,17 @@ export class AuthComponentComponent implements OnInit {
   }
 
   async login() {
-
-    const toast = await this.toastController.create({
-      message: 'Bienvenido!',
-      duration: 1500,
-      position: 'top',
+    this.isLoading = true
+    const body = {
+      correo: this.formData.get('email').value,
+      clave: this.formData.get('password').value
+    }
+    this.auth.userLogin(body).subscribe((data: any) => {
+      this.router.navigate(['/home']);
+      this.formData.reset()
+      localStorage.setItem("token", data.data_send?.token);
     });
-
-    await toast.present();
-
-    var formData: any = new FormData();
-    this.router.navigate(['/home']);
-    /*  if(this.formData.valid){
-        this.isLoading = true
-        formData.append('email', this.formData.get('email').value);
-        formData.append('password', this.formData.get('password').value);
-        console.log(this.formData)
-        this.auth.userLogin(formData).subscribe((data:any)=>{
-          console.log(data);
-        });
-      }*/
+    this.isLoading = false
   }
 
   register() {
@@ -63,5 +57,11 @@ export class AuthComponentComponent implements OnInit {
       });
     }
   }
+
+
+  togglePassword() {
+    this.showPassword = !this.showPassword;
+  }
+
 
 }

@@ -3,6 +3,7 @@ import { LoadingController, ModalController, Platform } from '@ionic/angular';
 import { MarkerModalComponent } from '../marker-modal/marker-modal.component';
 import { AfterViewInit, Component } from '@angular/core';
 import { Geolocation } from '@capacitor/geolocation';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-map',
@@ -11,12 +12,14 @@ import { Geolocation } from '@capacitor/geolocation';
 })
 export class MapComponent implements AfterViewInit {
   private map: any;
+  posiction: any
   ubicacionTexto: string = 'Obteniendo ubicación...';
 
   constructor(
     private modalCtrl: ModalController,
     private loadingCtrl: LoadingController,
-    private platform: Platform
+    private platform: Platform,
+    private auth: AuthService,
   ) { }
 
   async ngAfterViewInit(): Promise<void> {
@@ -29,6 +32,8 @@ export class MapComponent implements AfterViewInit {
     await loading.present();
 
     const position = await this.getCurrentLocation();
+    console.log(position)
+    this.posiction = position
 
     if (position) {
       this.initMap(position.coords.latitude, position.coords.longitude);
@@ -74,7 +79,7 @@ export class MapComponent implements AfterViewInit {
       position: 'bottomright' // 'topleft', 'topright', 'bottomleft', 'bottomright'
     }).addTo(this.map);
 
-    
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
     }).addTo(this.map);
@@ -95,8 +100,7 @@ export class MapComponent implements AfterViewInit {
     });
 
 
-    // Marcadores de ejemplo
-    const markersData = [
+    let markersData: any = [
       {
         lat: lat + 0.003,
         lng: lng + 0.003,
@@ -110,6 +114,29 @@ export class MapComponent implements AfterViewInit {
         description: 'Este es el segundo marcador'
       }
     ];
+    const body = {
+      lat: this.posiction.coords.latitude,
+      lng: this.posiction.coords.longitude,
+    }
+    this.auth.userParadas(body).subscribe((data: any) => {
+
+      console.log(data)
+      markersData = [
+        {
+          lat: lat + 0.003,
+          lng: lng + 0.003,
+          title: 'Ubicación 1',
+          description: 'Este es el primer marcador'
+        },
+        {
+          lat: lat + 0.005,
+          lng: lng - 0.002,
+          title: 'Ubicación 2',
+          description: 'Este es el segundo marcador'
+        }
+      ];
+
+    });
 
     markersData.forEach(data => {
       const marker = L.marker([data.lat, data.lng], { icon }).addTo(this.map);

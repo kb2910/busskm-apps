@@ -36,7 +36,33 @@
         </provider>
     </application>
 
-    <!-- Permissions -->
+ 
 
-    <uses-permission android:name="android.permission.INTERNET" />
+            <!-- Geolocalización -->
+        <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+        <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+        <!-- Cámara -->
+        <uses-permission android:name="android.permission.CAMERA" />
+
+        <!-- Micrófono -->
+        <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+        <!-- Almacenamiento (lectura y escritura) -->
+        <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+
+        <!-- Para acceder al estado de red (Wi-Fi / datos móviles) -->
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+            <!-- Para obtener información de la red Wi-Fi actual -->
+            <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+            <!-- Para acceder al SSID en Android 10+ -->
+            <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+
+        <!-- Brújula: no requiere permiso explícito, se accede a través de sensores -->
+
 </manifest>

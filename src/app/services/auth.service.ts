@@ -1,19 +1,37 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  API_URL = environment.API_URL;
-  constructor(private http:HttpClient) {}
+  private API_URL = environment.API_URL;
+  token: any = localStorage.getItem('token');
+  constructor(private http: HttpClient) {}
 
-  userLogin(req){
-    return this.http.post(`${this.API_URL}login`,req);
+  userLogin(req: any): Observable<any> {
+    return this.http.post(`${this.API_URL}/auth/login`, req);
+    
   }
 
-  userRegister(req){
-    return this.http.post(`${this.API_URL}register`,req);
+
+  userParadas(req:any) {
+    return this.http.get(`${this.API_URL}/parada/v2/publico/stops/${req?.lat}/${req?.lng}`,
+      {
+        headers: new HttpHeaders({
+          "Access-Control-Allow-Origin": "*",
+          "Authorization": "Bearer " + this.token
+
+        })
+      }
+    );
+  }
+
+ 
+
+  userRegister(req: any): Observable<any> {
+    return this.http.post(`${this.API_URL}/register`, req);
   }
 }
