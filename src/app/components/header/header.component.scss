@@ -1,23 +1,25 @@
+ion-content {
+  --background: transparent;
+}
+
 .custom-toolbar {
-  --background: #e91e63;
-  --color: white;
-  height: 60px;
-  border-bottom-left-radius:12px;
-  border-bottom-right-radius:12px;
+  --background: var(--io-color-pink);
+  --color: var(--io-color-white);
+  height: 70px;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
 
   ion-title {
     text-align: center;
   }
 
   img {
-    height: 28px;
+    height: 30px;
   }
 }
 
 .status-alert {
-  --background: #f8f8f8;
-
-  ion-icon {
+  --background: var(--io-color-white) ion-icon {
     font-size: 10px;
   }
 

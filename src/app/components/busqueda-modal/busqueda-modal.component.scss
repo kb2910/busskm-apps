@@ -1,0 +1,27 @@
+:host {
+    --ion-background-color: #ffffff;
+    --ion-text-color: #000000;
+  }
+  
+  ion-header,
+  ion-toolbar,
+  ion-content {
+    --background: #ffffff;
+    --color: #000000;
+  }
+  
+  ion-searchbar {
+    --background: #f0f0f0;
+    --color: #000000;
+    border-radius: 12px;
+  }
+  
+  ion-item {
+    --background: #ffffff;
+    color: #000000;
+  }
+  
+  ion-icon {
+    color: #000000;
+  }
+  

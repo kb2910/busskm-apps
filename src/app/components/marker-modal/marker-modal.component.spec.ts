@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { MapPage } from './map.page';
+import { MarkerModalComponent } from './marker-modal.component';
 
-describe('MapPage', () => {
-  let component: MapPage;
-  let fixture: ComponentFixture<MapPage>;
+describe('MarkerModalComponent', () => {
+  let component: MarkerModalComponent;
+  let fixture: ComponentFixture<MarkerModalComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ MapPage ],
+      declarations: [ MarkerModalComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MapPage);
+    fixture = TestBed.createComponent(MarkerModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

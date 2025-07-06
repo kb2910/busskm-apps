@@ -1,0 +1,34 @@
+<ion-header>
+  <app-header [showBackButton]="true"></app-header>
+</ion-header>
+
+<ion-content>
+  <div>
+    <app-map></app-map>
+  </div>
+  <div class="login-fixed-bottom">
+    <div class="modal-header">
+      <h2><strong>Kevin</strong> Banezca</h2>
+      <p>Seleccione <span class="pink">su transporte y destino</span></p>
+    </div>
+
+    <div class="transport-selector">
+      <ion-segment [(ngModel)]="segmentValue" class="custom-segment">
+        <ion-segment-button value="buss">
+          <ion-label> <img src="assets/icon/buss3.svg" alt="Logo" width="25"  height="25"/>Buss</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="taxi">
+          <ion-label> <img src="assets/taxi_30_rosa.png" alt="Logo" width="25"  height="25" />Taxi</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+
+    </div>
+
+    <ion-searchbar show-clear-button="focus" value="Buscar destino" (click)="openSearchModal()"></ion-searchbar>
+
+    <ion-button expand="block" class="btn-siguiente" (click)="siguiente()">
+      Siguiente
+    </ion-button>
+
+  </div>
+</ion-content>

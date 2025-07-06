@@ -1,12 +1,11 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthComponentComponent } from './auth-component/auth-component.component';
+import { MapComponent } from './components/map/map.component';
+import { HomeComponent } from './home/home.component';
 
 const routes: Routes = [
-  {
-    path: 'home',
-    loadChildren: () => import('./map/map.module').then( m => m.MapPageModule)
-  },
+ 
   {
     path: '',
     component: AuthComponentComponent
@@ -17,8 +16,13 @@ const routes: Routes = [
   },
   {
     path: 'map',
-    loadChildren: () => import('./map/map.module').then( m => m.MapPageModule)
-  }
+    component: MapComponent
+  },
+  {
+    path: 'home',
+    component: HomeComponent
+  }, 
+
 
 ];
 @NgModule({

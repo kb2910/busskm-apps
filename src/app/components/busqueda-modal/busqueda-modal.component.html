@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Buscar destino</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-searchbar [(ngModel)]="searchTerm" placeholder="Buscar..."></ion-searchbar>
+
+  <ion-list>
+    <ion-item *ngFor="let item of filteredList" (click)="close(item)">
+      {{ item }}
+    </ion-item>
+  </ion-list>
+</ion-content>

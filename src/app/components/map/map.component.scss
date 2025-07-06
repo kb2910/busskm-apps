@@ -1,0 +1,28 @@
+.full-content,
+ion-content,
+#map {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+.custom-loading .loading-wrapper {
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+}
+
+
+.ubicacion-flotante {
+  position: absolute;
+  top: 9px;
+  left: 13px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #000;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  right: 13px;
+}
