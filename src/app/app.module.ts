@@ -18,9 +18,10 @@ import { RegisterModalComponent } from './registrer-modal/registrer-modal.compon
 import { HttpStatusInterceptor } from './services/interceptor';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DetailStartToToursComponent } from './components/detail-start-to-tours/detail-start-to-tours.component';
 
 @NgModule({
-  declarations: [AppComponent, AuthComponentComponent, HeaderComponent, HomeComponent, MapComponent, MarkerModalComponent, BusquedaModalComponent, RegisterModalComponent],
+  declarations: [AppComponent, AuthComponentComponent, HeaderComponent, HomeComponent, MapComponent, MarkerModalComponent, BusquedaModalComponent, RegisterModalComponent,DetailStartToToursComponent],
   imports: [BrowserAnimationsModule,
     ToastrModule.forRoot(), BrowserModule, IonicModule.forRoot(), AppRoutingModule, ReactiveFormsModule, HttpClientModule, FormsModule],
   providers: [CommonModule, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },

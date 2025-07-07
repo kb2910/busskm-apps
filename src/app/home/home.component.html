@@ -1,24 +1,36 @@
-<ion-header>
-  <app-header [showBackButton]="true"></app-header>
-</ion-header>
-
 <ion-content>
+  <app-header [showBackButton]="true"></app-header>
   <div>
     <app-map></app-map>
   </div>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="primary">
+      <ion-icon name="chevron-up-outline"></ion-icon>
+    </ion-fab-button>
+
+    <ion-fab-list side="top">
+      <ion-fab-button color="medium" (click)="abrirModal()">
+        <ion-icon name="information-circle-outline"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button color="success" (click)="irAOtraPantalla()">
+        <ion-icon name="navigate-outline"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+
   <div class="login-fixed-bottom">
     <div class="modal-header">
-      <h2><strong>Kevin</strong> Banezca</h2>
+      <h2><strong>{{userData?.user_nombre}}</strong></h2>
       <p>Seleccione <span class="pink">su transporte y destino</span></p>
     </div>
 
     <div class="transport-selector">
       <ion-segment [(ngModel)]="segmentValue" class="custom-segment">
         <ion-segment-button value="buss">
-          <ion-label> <img src="assets/icon/buss3.svg" alt="Logo" width="25"  height="25"/>Buss</ion-label>
+          <ion-label> <img src="assets/icon/buss3.svg" alt="Logo" width="25" height="25" />Buss</ion-label>
         </ion-segment-button>
         <ion-segment-button value="taxi">
-          <ion-label> <img src="assets/taxi_30_rosa.png" alt="Logo" width="25"  height="25" />Taxi</ion-label>
+          <ion-label> <img src="assets/taxi_30_rosa.png" alt="Logo" width="25" height="25" />Taxi</ion-label>
         </ion-segment-button>
       </ion-segment>
 

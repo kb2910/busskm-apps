@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-marker-modal',
@@ -6,6 +6,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./marker-modal.component.scss'],
 })
 export class MarkerModalComponent implements OnInit {
+  @Input() title!: string;
+  @Input() description!: string;
+  @Input() parada!: any;
 
   constructor() { }
 

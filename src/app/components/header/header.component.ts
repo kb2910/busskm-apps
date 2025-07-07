@@ -14,6 +14,8 @@ export class HeaderComponent {
 
   constructor(private router: Router) {}
 
+
+
   goBack() {
     if (this.customBackFn) {
       this.customBackFn();

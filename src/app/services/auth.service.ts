@@ -18,7 +18,7 @@ export class AuthService {
 
 
   userParadas(req:any) {
-    return this.http.get(`${this.API_URL}/parada/v2/publico/stops/${req?.lat}/${req?.lng}`,
+    return this.http.post(`${this.API_URL}/operador/stopsByLocation/`, req,
       {
         headers: new HttpHeaders({
           "Access-Control-Allow-Origin": "*",

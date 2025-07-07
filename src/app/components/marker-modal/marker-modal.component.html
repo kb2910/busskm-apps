@@ -1,3 +1,15 @@
-<p>
-  marker-modal works!
-</p>
+<app-header></app-header>
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>{{ parada.nombre }}</ion-card-title>
+    <ion-card-subtitle>Ruta: {{ parada.rutaid.nombre }} ({{ parada.rutaid.codigo }})</ion-card-subtitle>
+  </ion-card-header>
+
+  <ion-card-content>
+    <p><strong>Municipio:</strong> {{ parada.municipioid.nombre }}</p>
+    <p><strong>Coordenadas:</strong> {{ parada.latitud }}, {{ parada.longitud }}</p>
+    <p><strong>Orden:</strong> {{ parada.orden }}</p>
+    <p><strong>Distancia:</strong> {{ parada.distanceMeters }} metros</p>
+    <p><strong>Tiempo estimado:</strong> {{ parada.estimatedTime }} min</p>
+  </ion-card-content>
+</ion-card>

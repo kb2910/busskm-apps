@@ -40,6 +40,7 @@ export class AuthComponentComponent implements OnInit {
       this.router.navigate(['/home']);
       this.formData.reset()
       localStorage.setItem("token", data.data_send?.token);
+      localStorage.setItem("dataUsers", JSON.stringify(data.data_send));
     });
     this.isLoading = false
   }

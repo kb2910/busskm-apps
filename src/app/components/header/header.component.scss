@@ -31,3 +31,17 @@ ion-content {
     margin-left: auto;
   }
 }
+
+
+ion-menu {
+  z-index: 9999 !important;
+  --background: var(--io-color-pink);
+  color: var(--io-color-white)
+}
+
+.ros{
+  --background: var(--io-color-pink);
+  color: var(--io-color-white)
+}
+
+
