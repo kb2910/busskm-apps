@@ -44,7 +44,13 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
 
   ngOnInit() {
     this.routr.paramMap.subscribe(params => {
-      this.idRuta = params.get('idRuta');
+      const id = params.get('idRuta');
+      // Si NO hay idRuta o es '0', no lo usamos
+      if (!id || id === '0') {
+        this.idRuta = 0;
+      } else {
+        this.idRuta = id;
+      }
     });
   }
 
@@ -191,21 +197,21 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
     } else {
       this.parada.getParadasByRoute(this.idRuta).subscribe((data: any) => {
         const markersData = generarMarkersDesdeDataByRoute(data?.data_send?.paradas);
-      
+
         const latlngs: L.LatLngExpression[] = [];
-      
+
         markersData.forEach(data => {
           const icon = createCustomIcon(data.color || '#ec1581');
           const marker = L.marker([data.lat, data.lng], { icon }).addTo(this.map);
-      
+
           latlngs.push([data.lat, data.lng]);
 
-      
+
           marker.on('click', () => {
             this.openMarkerModal({ title: data.title, description: data.description, parada: data.parada });
           });
         });
-      
+
         // Dibujar línea entre paradas
         if (latlngs.length > 1) {
           const polyline = L.polyline(latlngs, {
@@ -213,19 +219,19 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
             weight: 8,
             opacity: 0.7
           }).addTo(this.map);
-      
+
           this.map.fitBounds(polyline.getBounds());
         }
-      
+
         // Marker del usuario
         const myMarker = L.marker(
           [this.posiction.coords.latitude, this.posiction.coords.longitude],
           { icon: myLocationIcon }
         ).addTo(this.map);
-      
+
         myMarker.bindPopup("📍 Estás aquí").openPopup();
       });
-      
+
     }
     // Mostrar nombre de ciudad
     fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
