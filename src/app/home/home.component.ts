@@ -3,6 +3,7 @@ import { BusquedaModalComponent } from '../components/busqueda-modal/busqueda-mo
 import { ModalController } from '@ionic/angular';
 import { DetailStartToToursComponent } from '../components/detail-start-to-tours/detail-start-to-tours.component';
 import { Router } from '@angular/router';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
@@ -14,51 +15,51 @@ export class HomeComponent implements OnInit {
   destino: string = '';
   segmentValue: string = 'buss';
   userData: any
+  destinoSeleccionado: any = []
 
 
 
-  constructor(private modalCtrl: ModalController,private router: Router) { }
+  constructor(private modalCtrl: ModalController, private router: Router,
+    private navCtrl: NavController) { }
 
   ngOnInit() {
     this.userData = JSON.parse(localStorage.getItem("dataUsers") || '0');
-   }
-
-
-  siguiente() {
-    console.log('Transporte:', this.transporteSeleccionado);
-    console.log('Destino:', this.destino);
   }
 
+
+ 
   async openSearchModal() {
     const modal = await this.modalCtrl.create({
       component: BusquedaModalComponent,
-      componentProps: {
-        data: [
-          'Amsterdam', 'Buenos Aires', 'Cairo', 'Geneva', 'Hong Kong',
-          'Istanbul', 'London', 'Madrid', 'New York', 'Panama City'
-        ]
-      }
+      
     });
 
     await modal.present();
 
     const { data } = await modal.onDidDismiss();
-    if (data) {
-      console.log('Destino seleccionado:', data);
+    if (data?.destino) {
+      console.log('Destino seleccionado:', data.destino);
+      this.destinoSeleccionado = data.destino;
+      const rutaId = this.destinoSeleccionado?.rutaid?._id;
+      if (rutaId) {
+        this.navCtrl.navigateForward(['/map', rutaId]).then(() => {
+          window.location.reload(); 
+        });
+      } else {
+        console.warn('rutaid._id no definido');
+      }
+      
     }
 
   }
 
-  async abrirModal() {
-    const modal = await this.modalCtrl.create({
-      component: DetailStartToToursComponent,
-    });
-    return await modal.present();
-  }
+ 
 
   irAOtraPantalla() {
     this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-      this.router.navigate(['/map']);
+      this.navCtrl.navigateForward(['/map']).then(() => {
+        window.location.reload(); 
+      });
     });
   }
 

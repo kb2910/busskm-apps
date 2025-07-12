@@ -26,3 +26,19 @@ ion-content,
   z-index: 1000;
   right: 13px;
 }
+
+
+:host {
+  display: block;
+  height: 100vh; // ⚠️ Asegura altura completa visible
+}
+
+ion-content {
+  --background: transparent;
+  height: 100%;
+}
+
+#map {
+  height: 100%;
+  width: 100%;
+}

@@ -14,6 +14,17 @@ const config: CapacitorConfig = {
         buttonNegative: "Cancelar"
       }
     }
+  },
+  cordova: {
+    preferences: {
+      SplashScreen: 'screen',
+      SplashScreenBackgroundColor: '#ffffff',
+      SplashScreenDarkBackgroundColor: '#000000',
+      SplashMaintainAspectRatio: 'true',
+      FadeSplashScreenDuration: '500',
+      ShowSplashScreen: 'true',
+      SplashScreenDelay: '3000'
+    }
   }
   
 };

@@ -1,8 +1,16 @@
 <ion-content [fullscreen]="true" class="ion-no-padding full-map">
+  <!-- Texto de ubicación flotante -->
   <div class="ubicacion-flotante">
     📍 Estás en: {{ ubicacionTexto }}
   </div>
 
-  <div id="map"></div>
+  <!-- Contenedor del mapa -->
+  <div id="map" style="height: 100%; width: 100%;"></div>
 
+  <!-- Botón flotante para volver -->
+  <ion-fab vertical="bottom" horizontal="start" slot="fixed" *ngIf="showBackButton">
+    <ion-fab-button color="danger" (click)="goBack()">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

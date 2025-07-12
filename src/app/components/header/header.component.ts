@@ -10,9 +10,10 @@ export class HeaderComponent {
   @Input() showBackButton: boolean = false;
   @Input() showMenuButton: boolean = false;
   @Input() backHref: string = '/';
+  userData: any
   @Input() customBackFn: (() => void) | null = null;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
 
 
@@ -23,4 +24,10 @@ export class HeaderComponent {
       this.router.navigate([this.backHref]);
     }
   }
+
+
+  ngOnInit() {
+    this.userData = JSON.parse(localStorage.getItem("dataUsers") || '0');
+   }
+
 }

@@ -1,5 +1,5 @@
 {
-  "name": "juned",
+  "name": "Busskm",
   "version": "0.0.1",
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
@@ -29,6 +29,7 @@
     "@capacitor/keyboard": "4.0.1",
     "@capacitor/status-bar": "4.0.1",
     "@ionic/angular": "^6.1.9",
+    "cordova-plugin-splashscreen": "^6.0.2",
     "ionicons": "^6.0.3",
     "leaflet": "^1.9.4",
     "ngx-toastr": "^14.3.0",

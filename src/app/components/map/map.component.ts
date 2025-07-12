@@ -1,46 +1,86 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { LoadingController, ModalController, Platform } from '@ionic/angular';
 import * as L from 'leaflet';
 import { AuthService } from 'src/app/services/auth.service';
 import { LocationService } from 'src/app/services/location.service';
 import { environment } from 'src/environments/environment';
-import { createCustomIcon, generarMarkersDesdeData } from 'src/utils/map.utils';
+import { createCustomIcon, generarMarkersDesdeData, generarMarkersDesdeDataByRoute } from 'src/utils/map.utils';
 import { MarkerModalComponent } from '../marker-modal/marker-modal.component';
 import { Location } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
+import { ParadaService } from 'src/app/services/paradas.service';
 
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss']
 })
-export class MapComponent implements AfterViewInit{
+export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
   private map: any;
   posiction: any
   ubicacionTexto: string = 'Obteniendo ubicación...';
   userData: any;
-  api:any;
+  api: any;
+  mapInitialized = false;
+  @Input() showBackButton: boolean = true;
+  idRuta: any = 0
 
   constructor(
     private modalCtrl: ModalController,
     private loadingCtrl: LoadingController,
     private platform: Platform,
     private auth: AuthService,
+    private parada: ParadaService,
     private locationService: LocationService,
     private location: Location,
-    private router: Router
+    private router: Router,
+    private routr: ActivatedRoute
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
-  
+
+
+
+  ngOnInit() {
+    this.routr.paramMap.subscribe(params => {
+      this.idRuta = params.get('idRuta');
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.map) {
+      this.map.remove(); // Destruye instancia
+      this.map = null;
+    }
+
+    // Limpieza segura del contenedor
+    const existingMap = L.DomUtil.get('map');
+    if (existingMap != null) {
+      (existingMap as any)._leaflet_id = null;
+    }
+  }
+
+
 
   async ngAfterViewInit(): Promise<void> {
+    // ⚠️ Prevención adicional
+    const existingMap = L.DomUtil.get('map');
+    if (existingMap && (existingMap as any)._leaflet_id != null) {
+      (existingMap as any)._leaflet_id = null;
+    }
+
+    if (this.mapInitialized) return;
+    this.mapInitialized = true;
+
 
     if (this.map) {
-      this.map.remove(); // destruye la instancia anterior
+      this.map.remove();
+      this.map = null;
     }
 
     this.userData = JSON.parse(localStorage.getItem("dataUsers") || '0');
+
     const loading = await this.loadingCtrl.create({
       message: 'Cargando mapa...',
       spinner: 'crescent',
@@ -48,15 +88,17 @@ export class MapComponent implements AfterViewInit{
     });
 
     await loading.present();
+
     const position = await this.locationService.getCurrentLocation();
-    this.posiction = position
+    this.posiction = position;
 
     if (position) {
       this.initMap(position.coords.latitude, position.coords.longitude);
+      // ⚠️ Esperar un poco para que Ionic haya terminado de animar/transicionar
       setTimeout(() => {
-        this.map.invalidateSize();
+        this.map.invalidateSize(); // Forzar redibujado
         loading.dismiss();
-      }, 400);
+      }, 300); // 
     } else {
       loading.dismiss();
       alert('No se pudo obtener la ubicación actual.');
@@ -67,20 +109,21 @@ export class MapComponent implements AfterViewInit{
 
 
   private initMap(lat: number, lng: number): void {
+
     this.map = L.map('map', {
       center: [lat, lng],
       zoom: 13,
       zoomControl: false
     });
-  
+
     L.control.zoom({
       position: 'bottomright'
     }).addTo(this.map);
-  
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
     }).addTo(this.map);
-  
+
     const icon = L.divIcon({
       className: '',
       html: `
@@ -98,7 +141,7 @@ export class MapComponent implements AfterViewInit{
 
 
     // MARKET DEL USUARIO PARA EL MAPA 
-    let imagenYo: any = environment.API_URL+'/'+this.userData?.imagen;
+    let imagenYo: any = environment.API_URL + '/' + this.userData?.imagen;
     const myLocationIcon = L.divIcon({
       className: '',
       html: `
@@ -121,29 +164,69 @@ export class MapComponent implements AfterViewInit{
       iconAnchor: [25, 50],
       popupAnchor: [0, -50]
     });
-    
-    
-  
-    // Obtener marcadores y agregarlos
-    const body = {
-      lat: this.posiction.coords.latitude,
-      lng: this.posiction.coords.longitude,
-    };
-  
-    this.auth.userParadas(body).subscribe((data: any) => {
-      const markersData = generarMarkersDesdeData(data?.data);
-      markersData.forEach(data => {
-        const icon = createCustomIcon(data.color || '#ec1581');
-        const marker = L.marker([data.lat, data.lng], { icon }).addTo(this.map);
-        marker.on('click', () => {
-          this.openMarkerModal({ title: data.title, description: data.description, parada: data.parada });
+
+
+    if (this.idRuta == 0) {
+
+      // Obtener marcadores y agregarlos
+      const body = {
+        lat: this.posiction.coords.latitude,
+        lng: this.posiction.coords.longitude,
+      };
+
+      this.auth.userParadas(body).subscribe((data: any) => {
+        const markersData = generarMarkersDesdeData(data?.data);
+        markersData.forEach(data => {
+          const icon = createCustomIcon(data.color || '#ec1581');
+          const marker = L.marker([data.lat, data.lng], { icon }).addTo(this.map);
+          marker.on('click', () => {
+            this.openMarkerModal({ title: data.title, description: data.description, parada: data.parada });
+          });
         });
+
+        const myMarker = L.marker([this.posiction.coords.latitude, this.posiction.coords.longitude], { icon: myLocationIcon }).addTo(this.map);
+        myMarker.bindPopup("📍 Estás aquí").openPopup();
       });
 
-      const myMarker = L.marker([this.posiction.coords.latitude,this.posiction.coords.longitude], { icon:myLocationIcon }).addTo(this.map);
-      myMarker.bindPopup("📍 Estás aquí").openPopup();
-    });
-  
+    } else {
+      this.parada.getParadasByRoute(this.idRuta).subscribe((data: any) => {
+        const markersData = generarMarkersDesdeDataByRoute(data?.data_send?.paradas);
+      
+        const latlngs: L.LatLngExpression[] = [];
+      
+        markersData.forEach(data => {
+          const icon = createCustomIcon(data.color || '#ec1581');
+          const marker = L.marker([data.lat, data.lng], { icon }).addTo(this.map);
+      
+          latlngs.push([data.lat, data.lng]);
+
+      
+          marker.on('click', () => {
+            this.openMarkerModal({ title: data.title, description: data.description, parada: data.parada });
+          });
+        });
+      
+        // Dibujar línea entre paradas
+        if (latlngs.length > 1) {
+          const polyline = L.polyline(latlngs, {
+            color: '#000000',
+            weight: 8,
+            opacity: 0.7
+          }).addTo(this.map);
+      
+          this.map.fitBounds(polyline.getBounds());
+        }
+      
+        // Marker del usuario
+        const myMarker = L.marker(
+          [this.posiction.coords.latitude, this.posiction.coords.longitude],
+          { icon: myLocationIcon }
+        ).addTo(this.map);
+      
+        myMarker.bindPopup("📍 Estás aquí").openPopup();
+      });
+      
+    }
     // Mostrar nombre de ciudad
     fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
       .then(res => res.json())
@@ -155,13 +238,17 @@ export class MapComponent implements AfterViewInit{
       .catch(err => {
         this.ubicacionTexto = 'Ubicación desconocida';
       });
+
+
   }
 
-  
+
   async openMarkerModal(data: { title: string; description: string, parada: any }) {
     const modal = await this.modalCtrl.create({
       component: MarkerModalComponent,
-      componentProps: data
+      componentProps: data,
+      breakpoints: [0, 0.5, 1],
+      initialBreakpoint: 0.5
     });
     await modal.present();
   }
@@ -172,11 +259,6 @@ export class MapComponent implements AfterViewInit{
   }
 
 
-  ngOnDestroy(): void {
-    if (this.map) {
-      this.map.remove(); // Destruye la instancia del mapa
-      this.map = null;
-    }
-  }
-  
+
+
 }

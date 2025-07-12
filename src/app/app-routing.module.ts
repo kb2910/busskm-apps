@@ -19,6 +19,10 @@ const routes: Routes = [
     component: MapComponent
   },
   {
+    path: 'map/:idRuta',
+    component: MapComponent
+  },
+  {
     path: 'home',
     component: HomeComponent
   }, 

@@ -240,3 +240,20 @@
     --ion-card-background: #1e1e1e;
   }
 }
+
+
+
+@media (prefers-color-scheme: dark) {
+  ion-content {
+    --background: #000;
+    --color: #fff;
+  }
+}
+
+
+ion-loading.custom-loading {
+  --background: #e3edff;
+  --spinner-color: #1c6dff;
+
+  color: #1c6dff;
+}

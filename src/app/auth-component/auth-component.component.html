@@ -5,7 +5,7 @@
   <!-- Contenedor de login -->
   <div class="login-fixed-bottom" *ngIf="screen === 'signin'">
     <h2 class="login-title">INICIAR SESIÓN</h2>
-    <form [formGroup]="formData">
+    <form [formGroup]="formData" *ngIf="!isLoading">
       <ion-item lines="none" class="custom-item">
         <ion-input formControlName="email" type="email" placeholder="Correo electrónico"></ion-input>
       </ion-item>
@@ -27,5 +27,11 @@
         <p class="version">Versión 1.0.0 / Creado por <span class="bioonix">Bioonix</span></p>
       </div>
     </form>
+
+    <ion-item *ngIf="isLoading">
+      <ion-label>Validando credenciales</ion-label>
+      <ion-spinner name="dots"></ion-spinner>
+    </ion-item>
+    
   </div>
 </ion-content>

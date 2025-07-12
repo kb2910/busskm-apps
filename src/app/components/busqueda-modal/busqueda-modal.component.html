@@ -10,11 +10,18 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-searchbar [(ngModel)]="searchTerm" placeholder="Buscar..."></ion-searchbar>
+  <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="onSearchChange()" debounce="120" placeholder="Buscar..."></ion-searchbar>
 
-  <ion-list>
+  <ion-list *ngIf="filteredList.length > 0 && !isLoading">
     <ion-item *ngFor="let item of filteredList" (click)="close(item)">
-      {{ item }}
+      <ion-badge slot="end">{{ item.rutaid.nombre}}</ion-badge>
+      <ion-label> {{ item.nombre }} </ion-label>
     </ion-item>
   </ion-list>
+
+  <ion-item *ngIf="isLoading" class="text-center">
+    <ion-label>Consultando paradas</ion-label>
+    <ion-spinner name="dots"></ion-spinner>
+  </ion-item>
+  
 </ion-content>

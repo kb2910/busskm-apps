@@ -41,8 +41,10 @@ export class AuthComponentComponent implements OnInit {
       this.formData.reset()
       localStorage.setItem("token", data.data_send?.token);
       localStorage.setItem("dataUsers", JSON.stringify(data.data_send));
+      this.isLoading = false
+    }, error => {
+      this.isLoading = false;
     });
-    this.isLoading = false
   }
 
   register() {

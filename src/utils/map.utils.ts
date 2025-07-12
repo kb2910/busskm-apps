@@ -30,6 +30,27 @@
   }
   
 
+  export function generarMarkersDesdeDataByRoute(data: any[]) {
+    const markersData: any = [];
+  
+    data.forEach((parada : any) => {
+        const lat = parseFloat(parada.latitud);
+        const lng = parseFloat(parada.longitud);
+        if (!isNaN(lat) && !isNaN(lng)) {
+          markersData.push({
+            lat,
+            lng,
+            title: parada.nombre.trim(),
+            description: `Ruta: ${parada.rutaid.nombre}`,
+            color: parada.rutaid.color,
+            parada: parada
+          });
+        }
+      });
+    return markersData;
+  }
+  
+
 
 
   export function createCustomIcon(color: string) {

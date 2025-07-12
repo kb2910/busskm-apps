@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { ParadaService } from 'src/app/services/paradas.service';
 
 @Component({
   selector: 'app-busqueda-modal',
@@ -7,18 +8,42 @@ import { ModalController } from '@ionic/angular';
   styleUrls: ['./busqueda-modal.component.scss']
 })
 export class BusquedaModalComponent {
-  @Input() data: string[] = [];
-  searchTerm: string = '';
+  searchTerm = '';
+  filteredList: any = [];
+  isLoading: boolean = true
 
-  constructor(private modalCtrl: ModalController) {}
 
-  get filteredList() {
-    return this.data.filter(item =>
-      item.toLowerCase().includes(this.searchTerm.toLowerCase())
-    );
+  constructor(
+    private service: ParadaService,
+    private modalCtrl: ModalController
+  ) { }
+
+  onSearchChange() {
+    this.isLoading = true
+    const query = this.searchTerm.trim();
+    if (query.length < 2) {
+      this.filteredList = [];
+      return;
+    }
+
+    this.service.searchStops(query)
+      .subscribe({
+        next: (data: any) => {
+          this.filteredList = data?.data_send;
+          this.isLoading = false
+        },
+        error: (err) => {
+          this.isLoading = false
+          this.filteredList = [];
+        }
+      });
   }
 
-  close(item?: string) {
-    this.modalCtrl.dismiss(item);
+  close(selectedItem?: string) {
+    this.modalCtrl.dismiss({
+      destino: selectedItem
+    });
   }
+
+
 }
