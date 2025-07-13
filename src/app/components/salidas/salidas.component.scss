@@ -1,0 +1,57 @@
+ion-content {
+  --padding-start: 16px;
+  --padding-end: 16px;
+}
+
+
+ion-item {
+  --background: #1e1e1e;
+  color: white;
+
+  ion-label h2 {
+    font-weight: bold;
+    margin: 0;
+  }
+
+  ion-label p {
+    font-size: 13px;
+    margin: 2px 0;
+  }
+
+  ion-avatar img {
+    object-fit: cover;
+  }
+}
+
+.modal-toolbar {
+  --background: var(--io-color-pink);
+  --color: var(--io-color-white);
+  font-weight: bold;
+
+  ion-title {
+    font-weight: 600;
+    font-size: 16px;
+  }
+
+  ion-button {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--io-color-white);
+  }
+}
+
+
+
+.custom-toolbar {
+  --background: var(--io-color-pink);
+  --color: var(--io-color-white);
+  height: 50px;
+
+  ion-title {
+    text-align: center;
+  }
+
+  img {
+    height: 30px;
+  }
+}

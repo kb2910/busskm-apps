@@ -19,7 +19,7 @@
     </ion-item>
   </ion-list>
 
-  <ion-item *ngIf="isLoading" class="text-center">
+  <ion-item *ngIf="isLoading && filteredList != 0" class="text-center">
     <ion-label>Consultando paradas</ion-label>
     <ion-spinner name="dots"></ion-spinner>
   </ion-item>

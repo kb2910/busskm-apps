@@ -19,9 +19,10 @@ export class BusquedaModalComponent {
   ) { }
 
   onSearchChange() {
+    this.filteredList = [];
     this.isLoading = true
     const query = this.searchTerm.trim();
-    if (query.length < 2) {
+    if (query.length < 1) {
       this.filteredList = [];
       return;
     }

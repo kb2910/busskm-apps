@@ -1,48 +1,74 @@
-ion-content {
-    --background: transparent;
-  }
-  
-  .custom-toolbar {
-    --background: var(--io-color-pink);
-    --color: var(--io-color-white);
-    height: 70px;
-    border-bottom-left-radius: 12px;
-    border-bottom-right-radius: 12px;
-  
-    ion-title {
-      text-align: center;
-    }
-  
-    img {
-      height: 30px;
-    }
-  }
-  
-  .status-alert {
-    --background: var(--io-color-white) ion-icon {
-      font-size: 10px;
-    }
-  
-    ion-label {
-      font-size: 14px;
-    }
-  
-    ion-button {
-      margin-left: auto;
-    }
-  }
-  
-  
-  ion-menu {
-    z-index: 9999 !important;
-    --background: var(--io-color-pink);
-    color: var(--io-color-white)
-  }
-  
-  .ros{
-    --background: var(--io-color-pink);
-    color: var(--io-color-white)
-  }
-  
-  
-  
+.custom-menu {
+  --background: #121212;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0;
+}
+
+.menu-header {
+  background: linear-gradient(to right, #ec1581, #b00060);
+  padding: 40px 20px 20px;
+  text-align: center;
+  border-bottom-right-radius: 0px;
+}
+
+.menu-header ion-avatar {
+  margin: 0 auto;
+  width: 80px;
+  height: 80px;
+  border: 2px solid white;
+}
+
+.menu-username {
+  margin-top: 12px;
+  font-weight: bold;
+  font-size: 16px;
+  color:var(--ion-color-white, #fff);;;
+}
+
+.menu-item {
+  --background: transparent;
+  color: var(--io-color-white, #fff);;
+  font-size: 15px;
+  margin: 6px 10px;
+  border-radius: 10px;
+  background-color: #1f1f1f;
+}
+
+.menu-item ion-icon {
+  color: var(--io-color-pink, #fff);
+}
+
+.menu-footer {
+  text-align: center;
+  font-size: 12px;
+  color: #aaa;
+  padding: 20px;
+}
+
+.menu-footer .bioonix {
+  color: var(--io-color-pink, #fff);
+  font-weight: bold;
+}
+
+
+
+.list-md {
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  background: var(--ion-item-background, var(--ion-background-color, #fff));
+  /* border-radius: 27px; */
+  border-top-left-radius: 35px;
+}
+
+.menu-contendor{
+  background-color: var(--io-color-pink, #fff);;
+}

@@ -38,5 +38,17 @@ export class ParadaService {
   }
 
 
+  getStopsById(req:any) {
+    return this.http.get(`${this.API_URL}/parada/show/${req}`,
+      {
+        headers: new HttpHeaders({
+          "Access-Control-Allow-Origin": "*",
+          "Authorization": "Bearer " + this.token
+
+        })
+      }
+    );
+  }
+
 
 }

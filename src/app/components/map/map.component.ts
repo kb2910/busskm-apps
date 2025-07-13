@@ -1,15 +1,15 @@
+import { Location } from '@angular/common';
 import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingController, ModalController, Platform } from '@ionic/angular';
 import * as L from 'leaflet';
 import { AuthService } from 'src/app/services/auth.service';
 import { LocationService } from 'src/app/services/location.service';
-import { environment } from 'src/environments/environment';
-import { createCustomIcon, generarMarkersDesdeData, generarMarkersDesdeDataByRoute } from 'src/utils/map.utils';
-import { MarkerModalComponent } from '../marker-modal/marker-modal.component';
-import { Location } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
-import { Router } from '@angular/router';
 import { ParadaService } from 'src/app/services/paradas.service';
+import { environment } from 'src/environments/environment';
+import { createCustomIcon, generarMarkersDesdeData, generarMarkersDesdeDataByRoute, getParadaMasCercanaConDistanciaYTiempo } from 'src/utils/map.utils';
+import { MarkerModalComponent } from '../marker-modal/marker-modal.component';
+import { SocketService } from 'src/app/services/socket.service';
 
 @Component({
   selector: 'app-map',
@@ -25,6 +25,11 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
   mapInitialized = false;
   @Input() showBackButton: boolean = true;
   idRuta: any = 0
+  paradaSelect: any = 0
+  nearestInfo: any = 0
+  listsServices: any = 0
+  busMarkers: L.Marker[] = [];
+
 
   constructor(
     private modalCtrl: ModalController,
@@ -35,11 +40,11 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
     private locationService: LocationService,
     private location: Location,
     private router: Router,
-    private routr: ActivatedRoute
+    private routr: ActivatedRoute,
+    private socketService: SocketService
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
-
 
 
   ngOnInit() {
@@ -52,6 +57,11 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
         this.idRuta = id;
       }
     });
+
+
+    if (this.idRuta != 0) {
+      this.paradaSelect = JSON.parse(localStorage.getItem("destino") || '0');
+    }
   }
 
   ngOnDestroy(): void {
@@ -65,6 +75,11 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
     if (existingMap != null) {
       (existingMap as any)._leaflet_id = null;
     }
+
+    this.userData = JSON.parse(localStorage.getItem("dataUsers") || '0');
+    this.socketService.off('locationUpdated');
+    this.socketService.disconnect();
+
   }
 
 
@@ -109,6 +124,32 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
       loading.dismiss();
       alert('No se pudo obtener la ubicación actual.');
     }
+
+    this.socketService.connect();
+    this.socketService.on('connect', () => {
+      this.socketService.emit('unirseAruta', {
+        action: 'cliente',
+        rutaid: this.idRuta
+      });
+    });
+
+    this.socketService.on('locationUpdated', (data: any) => {
+      // Actualiza buses activos localmente
+      const serviciosActives: any = []
+      serviciosActives.push(data)
+      const actualizados = serviciosActives.map((s: any) => {
+        if (s._id === data.servicioid) {
+          return { ...s, lat: data.latitud, lng: data.longitud };
+        }
+        return s;
+      });
+
+
+      this.listsServices = actualizados;
+      this.renderBusesMarkers()
+    });
+
+
   }
 
 
@@ -196,9 +237,31 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
 
     } else {
       this.parada.getParadasByRoute(this.idRuta).subscribe((data: any) => {
-        const markersData = generarMarkersDesdeDataByRoute(data?.data_send?.paradas);
+        let markersData = generarMarkersDesdeDataByRoute(data?.data_send?.paradas);
 
-        const latlngs: L.LatLngExpression[] = [];
+        if (this.paradaSelect != 0) {
+          let x: any = []
+          for (const data of markersData) {
+            if (
+              data.parada?._id === this.paradaSelect._id
+            ) {
+              break;
+            } else {
+              x.push(data)
+            }
+          }
+          markersData = x
+
+          const resultado = getParadaMasCercanaConDistanciaYTiempo(markersData, this.posiction.coords.latitude, this.posiction.coords.longitude);
+          console.log(resultado)
+          if (resultado) {
+            this.nearestInfo = resultado
+          }
+
+        }
+
+
+        let latlngs: L.LatLngExpression[] = [];
 
         markersData.forEach(data => {
           const icon = createCustomIcon(data.color || '#ec1581');
@@ -206,11 +269,11 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
 
           latlngs.push([data.lat, data.lng]);
 
-
           marker.on('click', () => {
             this.openMarkerModal({ title: data.title, description: data.description, parada: data.parada });
           });
         });
+
 
         // Dibujar línea entre paradas
         if (latlngs.length > 1) {
@@ -262,7 +325,46 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
 
   goBack() {
     this.location.back();
+    localStorage.removeItem('destino')
   }
+
+
+
+
+  renderBusesMarkers() {
+    // Elimina los marcadores anteriores
+    this.busMarkers.forEach(marker => this.map.removeLayer(marker));
+    this.busMarkers = [];
+
+    if (!this.listsServices || !Array.isArray(this.listsServices)) return;
+
+    this.listsServices.forEach((bus: any) => {
+      let busImage: any = "/assets/icon/buss4.svg";
+      const icon = L.divIcon({
+        className: '',
+        html: `
+          <div style="
+          width: 30px;
+          height: 30px;
+          overflow: hidden;
+          box-shadow: 0 0 6px rgba(0,0,0,0.3);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          ">
+            <img src="${busImage}"
+               style="width: 100%; height: 100%; object-fit: cover;">
+          </div>
+        `
+      });
+
+      const marker = L.marker([bus.latitud, bus.longitud], { icon }).addTo(this.map);
+      marker.bindPopup(`Unidad:201`);
+
+      this.busMarkers.push(marker);
+    });
+  }
+
 
 
 

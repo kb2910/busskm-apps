@@ -69,4 +69,66 @@
       `
     });
   }
+
+
+
+  export function getParadaMasCercanaConDistanciaYTiempo(
+    listaParadas: any,
+    miLat: number,
+    miLng: number
+  ): { parada: any; distancia_mts: number; tiempo_min: number } | null {
+    if (!listaParadas || listaParadas.length === 0) return null;
+  
+    let paradaCercana = null;
+    let distanciaMinima = Infinity;
+  
+    for (const parada of listaParadas) {
+    
+      const lat = parseFloat(parada.lat);
+      const lng = parseFloat(parada.lng);
+      
+      const distanciaKm = calcularDistancia(miLat, miLng, lat, lng);
+      const distanciaMts = distanciaKm * 1000;
+    
+    
+      if (distanciaMts < distanciaMinima) {
+        distanciaMinima = distanciaMts;
+        paradaCercana = parada;
+      }
+    }
+    
+  
+    if (!paradaCercana) return null;
+  
+    // Tiempo estimado: 70 metros por minuto caminando (promedio)
+    const tiempoMin = Math.ceil(distanciaMinima / 70); // puedes usar 200 si es en vehículo lento
+  
+    return {
+      parada: paradaCercana,
+      distancia_mts: Math.round(distanciaMinima),
+      tiempo_min: tiempoMin
+    };
+  }
+
+  
+  function calcularDistancia(lat1: number, lon1: number, lat2: number, lon2: number): number {
+    const R = 6371; // Radio de la Tierra en km
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+  
+  function toRad(grados: number): number {
+    return grados * Math.PI / 180;
+  }
+  
+
+
+  
   

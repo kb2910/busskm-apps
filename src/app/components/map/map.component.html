@@ -1,16 +1,28 @@
 <ion-content [fullscreen]="true" class="ion-no-padding full-map">
-  <!-- Texto de ubicación flotante -->
-  <div class="ubicacion-flotante">
+  <!-- Texto de ubicación flotante - Ubicación actual -->
+  <div class="ubicacion-flotante ubicacion-actual">
     📍 Estás en: {{ ubicacionTexto }}
+  </div>
+
+  <!-- Texto de ubicación flotante - Destino -->
+  <div *ngIf="paradaSelect?.nombre" class="ubicacion-flotante ubicacion-destino">
+    📍 Destino: {{ paradaSelect.nombre }}
   </div>
 
   <!-- Contenedor del mapa -->
   <div id="map" style="height: 100%; width: 100%;"></div>
 
-  <!-- Botón flotante para volver -->
-  <ion-fab vertical="bottom" horizontal="start" slot="fixed" *ngIf="showBackButton">
+
+  <!-- Botón y panel de info -->
+  <ion-fab vertical="bottom" horizontal="start" slot="fixed" *ngIf="showBackButton" style="bottom: 31px;">
+    <!-- Botón volver -->
     <ion-fab-button color="danger" (click)="goBack()">
       <ion-icon name="arrow-back-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>
+   <!-- Tarjeta con info de la parada más cercana -->
+   <div class="nearest-info" *ngIf="nearestInfo">
+    <strong>Parada más cercana:</strong>{{ nearestInfo?.parada.title }}<br>
+    <ion-icon name="walk"></ion-icon> {{ nearestInfo?.distancia_mts }} mts • <ion-icon name="stopwatch"></ion-icon> {{ nearestInfo?.tiempo_min }} min
+  </div>
 </ion-content>

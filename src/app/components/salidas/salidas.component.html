@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar class="modal-toolbar">
+    <ion-title>Próximas salidas</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" color="light" (click)="cerrar()"><ion-icon name="close-circle"></ion-icon>
+        Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+  <ion-list *ngIf="salidas.length > 0; else sinDatos">
+    <ion-item *ngFor="let salida of salidas" lines="full">
+      <ion-avatar slot="start">
+        <img [src]="salida.foto || 'assets/splash.png'" (error)="salida.foto = 'assets/splash.png'"
+          alt="{{ salida.chofer }}" />
+
+      </ion-avatar>
+
+      <ion-label>
+        <h2>{{ salida.chofer }}</h2>
+        <p>
+          <ion-icon name="bus" style="vertical-align: middle;"></ion-icon>
+          {{ salida.unidad }}
+        </p>
+        <p>
+          <ion-icon name="calendar" style="vertical-align: middle;"></ion-icon>
+          {{ salida.fecha }}
+          &nbsp;
+          <ion-icon name="time" style="vertical-align: middle;"></ion-icon>
+          {{ salida.hora }}
+        </p>
+        <p>
+          <ion-icon name="time" style="vertical-align: middle;"></ion-icon>
+          {{ calcularTiempoRestante(salida.fecha, salida.hora) }}
+        </p>
+        
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ng-template #sinDatos>
+    <ion-item>
+      <ion-label>No hay salidas disponibles.</ion-label>
+    </ion-item>
+  </ng-template>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar class="custom-toolbar">
+    <ion-title class="logo-title">
+      <img src="assets/BlancoNegroLogo.svg" alt="Logo" />
+    </ion-title>
+  </ion-toolbar>
+</ion-footer>

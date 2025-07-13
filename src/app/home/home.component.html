@@ -4,22 +4,24 @@
   <div>
     <app-map [showBackButton]="false"></app-map>
   </div>
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button color="primary">
-      <ion-icon name="chevron-up-outline"></ion-icon>
-    </ion-fab-button>
-
-    <ion-fab-list side="top">
-      <ion-fab-button color="medium" (click)="abrirModal()">
-        <ion-icon name="information-circle-outline"></ion-icon>
-      </ion-fab-button>
-      <ion-fab-button color="success" (click)="irAOtraPantalla()">
-        <ion-icon name="navigate-outline"></ion-icon>
-      </ion-fab-button>
-    </ion-fab-list>
-  </ion-fab>
 
   <div class="login-fixed-bottom">
+    <!-- Botón flotante arriba del panel blanco -->
+    <ion-fab class="fab-overlay-top">
+      <ion-fab-button color="medium">
+        <ion-icon name="options"></ion-icon>
+      </ion-fab-button>
+
+      <ion-fab-list side="top">
+        <ion-fab-button color="primary" (click)="abrirModal()">
+          <ion-icon name="pin"></ion-icon>
+        </ion-fab-button>
+        <ion-fab-button color="dark" (click)="getSalidas()">
+          <ion-icon name="stopwatch"></ion-icon>
+        </ion-fab-button>
+      </ion-fab-list>
+    </ion-fab>
+
     <div class="modal-header">
       <h2><strong>{{userData?.user_nombre}}</strong></h2>
       <p>Seleccione <span class="pink">su transporte y destino</span></p>

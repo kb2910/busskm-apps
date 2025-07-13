@@ -81,4 +81,12 @@
     }
   }
 
+
+  .fab-overlay-top {
+    position: absolute;
+    bottom: 230px; // Ajusta esto según la altura de tu panel blanco
+    right: 16px;
+    z-index: 1001;
+  }
+  
   

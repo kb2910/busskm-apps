@@ -11,11 +11,10 @@ ion-content,
   color: white;
 }
 
-
 .ubicacion-flotante {
   position: absolute;
-  top: 9px;
   left: 13px;
+  right: 13px;
   background: rgba(255, 255, 255, 0.95);
   color: #000;
   padding: 8px 12px;
@@ -24,9 +23,15 @@ ion-content,
   font-weight: 500;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   z-index: 1000;
-  right: 13px;
 }
 
+.ubicacion-actual {
+  top: 9px;
+}
+
+.ubicacion-destino {
+  top: 55px; /* lo colocas debajo del otro */
+}
 
 :host {
   display: block;
@@ -42,3 +47,33 @@ ion-content {
   height: 100%;
   width: 100%;
 }
+
+.nearest-info {
+  position: absolute;
+  left: 70px;
+  bottom: 14px;
+  background: rgba(255, 255, 255, 0.97);
+  color: #000;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.4;
+  max-width: 72%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  z-index: 1001;
+  white-space: normal;
+  word-break: break-word;
+  bottom: 24px;
+}
+
+.nombre-parada {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.detalle-parada {
+  font-size: 12px;
+  color: #555;
+}
+
