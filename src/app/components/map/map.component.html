@@ -7,7 +7,33 @@
   <!-- Texto de ubicación flotante - Destino -->
   <div *ngIf="paradaSelect?.nombre" class="ubicacion-flotante ubicacion-destino">
     📍 Destino: {{ paradaSelect.nombre }}
+
   </div>
+
+  <div *ngIf="idRuta === 'consultRoute'" class="ubicacion-flotante ubicacion-destino">
+    <ion-item [style.backgroundColor]="rutaColor" color="light">
+      <ion-label color="dark">Ruta</ion-label>
+      <ion-select [(ngModel)]="selectedRuta" interface="popover" (ionChange)="cargarParadasRutaSeleccionada()"
+        placeholder="Disponible">
+        <ion-select-option *ngFor="let ruta of routesList" [value]="ruta._id">
+          <div style="display: flex; align-items: center;">
+            <div [ngStyle]="{
+                'background': ruta.color,
+                'width': '12px',
+                'height': '12px',
+                'border-radius': '50%',
+                'margin-right': '8px'
+              }"></div>
+            {{ ruta.nombre }}
+          </div>
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+  </div>
+
+
+
 
   <!-- Contenedor del mapa -->
   <div id="map" style="height: 100%; width: 100%;"></div>
@@ -20,9 +46,10 @@
       <ion-icon name="arrow-back-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-   <!-- Tarjeta con info de la parada más cercana -->
-   <div class="nearest-info" *ngIf="nearestInfo">
+  <!-- Tarjeta con info de la parada más cercana -->
+  <div class="nearest-info" *ngIf="nearestInfo">
     <strong>Parada más cercana:</strong>{{ nearestInfo?.parada.title }}<br>
-    <ion-icon name="walk"></ion-icon> {{ nearestInfo?.distancia_mts }} mts • <ion-icon name="stopwatch"></ion-icon> {{ nearestInfo?.tiempo_min }} min
+    <ion-icon name="walk"></ion-icon> {{ nearestInfo?.distancia_mts }} mts • <ion-icon name="stopwatch"></ion-icon> {{
+    nearestInfo?.tiempo_min }} min
   </div>
 </ion-content>

@@ -54,7 +54,6 @@ export class AuthComponentComponent implements OnInit {
       formData.append('name', this.formData.get('name').value);
       formData.append('email', this.formData.get('email').value);
       formData.append('password', this.formData.get('password').value);
-      console.log(this.formData)
       this.auth.userRegister(formData).subscribe((data: any) => {
         console.log(data);
       });

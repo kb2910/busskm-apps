@@ -51,4 +51,18 @@ export class ParadaService {
   }
 
 
+  
+  getAllStops() {
+    return this.http.get(`${this.API_URL}/ruta/show/`,
+      {
+        headers: new HttpHeaders({
+          "Access-Control-Allow-Origin": "*",
+          "Authorization": "Bearer " + this.token
+
+        })
+      }
+    );
+  }
+
+
 }

@@ -59,7 +59,7 @@ export class HomeComponent implements OnInit {
 
   irAOtraPantalla() {
     this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-      this.navCtrl.navigateForward(['/map']).then(() => {
+      this.navCtrl.navigateForward(['/map/consultRoute']).then(() => {
         window.location.reload(); 
       });
     });

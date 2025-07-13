@@ -10,6 +10,7 @@ import { environment } from 'src/environments/environment';
 import { createCustomIcon, generarMarkersDesdeData, generarMarkersDesdeDataByRoute, getParadaMasCercanaConDistanciaYTiempo } from 'src/utils/map.utils';
 import { MarkerModalComponent } from '../marker-modal/marker-modal.component';
 import { SocketService } from 'src/app/services/socket.service';
+import { IonButton, ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-map',
@@ -29,6 +30,12 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
   nearestInfo: any = 0
   listsServices: any = 0
   busMarkers: L.Marker[] = [];
+  routesList: any[] = [];
+  selectedRuta: any = null;
+  rutaMarkers: L.Marker[] = [];
+  rutaPolyline: L.Polyline | null = null;
+
+
 
 
   constructor(
@@ -41,7 +48,8 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
     private location: Location,
     private router: Router,
     private routr: ActivatedRoute,
-    private socketService: SocketService
+    private socketService: SocketService,
+    private toastController: ToastController
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
@@ -59,10 +67,20 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
     });
 
 
-    if (this.idRuta != 0) {
+    if (this.idRuta === 'consultRoute') {
+      this.loadAvailableRoutes();
+    } else if (this.idRuta != 0) {
       this.paradaSelect = JSON.parse(localStorage.getItem("destino") || '0');
     }
   }
+
+
+  loadAvailableRoutes() {
+    this.parada.getAllStops().subscribe((res: any) => {
+      this.routesList = res?.data_send || [];
+    });
+  }
+
 
   ngOnDestroy(): void {
     if (this.map) {
@@ -213,7 +231,7 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
     });
 
 
-    if (this.idRuta == 0) {
+    if (this.idRuta == 0 || this.idRuta == 'consultRoute') {
 
       // Obtener marcadores y agregarlos
       const body = {
@@ -223,13 +241,15 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
 
       this.auth.userParadas(body).subscribe((data: any) => {
         const markersData = generarMarkersDesdeData(data?.data);
-        markersData.forEach(data => {
-          const icon = createCustomIcon(data.color || '#ec1581');
-          const marker = L.marker([data.lat, data.lng], { icon }).addTo(this.map);
-          marker.on('click', () => {
-            this.openMarkerModal({ title: data.title, description: data.description, parada: data.parada });
+        if (this.idRuta != 'consultRoute') {
+          markersData.forEach(data => {
+            const icon = createCustomIcon(data.color || '#ec1581');
+            const marker = L.marker([data.lat, data.lng], { icon }).addTo(this.map);
+            marker.on('click', () => {
+              this.openMarkerModal({ title: data.title, description: data.description, parada: data.parada });
+            });
           });
-        });
+        }
 
         const myMarker = L.marker([this.posiction.coords.latitude, this.posiction.coords.longitude], { icon: myLocationIcon }).addTo(this.map);
         myMarker.bindPopup("📍 Estás aquí").openPopup();
@@ -253,7 +273,6 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
           markersData = x
 
           const resultado = getParadaMasCercanaConDistanciaYTiempo(markersData, this.posiction.coords.latitude, this.posiction.coords.longitude);
-          console.log(resultado)
           if (resultado) {
             this.nearestInfo = resultado
           }
@@ -277,13 +296,13 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
 
         // Dibujar línea entre paradas
         if (latlngs.length > 1) {
-          const polyline = L.polyline(latlngs, {
+          this.rutaPolyline = L.polyline(latlngs, {
             color: '#000000',
             weight: 8,
             opacity: 0.7
           }).addTo(this.map);
 
-          this.map.fitBounds(polyline.getBounds());
+          this.map.fitBounds(this.rutaPolyline.getBounds());
         }
 
         // Marker del usuario
@@ -366,7 +385,64 @@ export class MapComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
 
+  cargarParadasRutaSeleccionada() {
+    console.log(this.selectedRuta)
+    if (!this.selectedRuta) return;
+
+    // 🔴 Eliminar marcadores anteriores
+    this.rutaMarkers.forEach(marker => this.map.removeLayer(marker));
+    this.rutaMarkers = [];
+
+    this.parada.getParadasByRoute(this.selectedRuta).subscribe((data: any) => {
+      const markersData = generarMarkersDesdeDataByRoute(data?.data_send?.paradas || []);
+
+      if (!markersData.length) {
+        // 🟡 Mostrar mensaje si no hay paradas
+        alert('No hay paradas para esta ruta.');
+        return;
+      }
+
+      let latlngs: L.LatLngExpression[] = [];
+
+      markersData.forEach(data => {
+        const icon = createCustomIcon(data.color || '#ec1581');
+        const marker = L.marker([data.lat, data.lng], { icon }).addTo(this.map);
+        latlngs.push([data.lat, data.lng]);
+        marker.on('click', () => {
+          this.openMarkerModal({ title: data.title, description: data.description, parada: data.parada });
+        });
+
+        // Guardar el marker para poder eliminarlo después
+        this.rutaMarkers.push(marker);
+      });
+      // 🔴 Eliminar polyline anterior si existe
+      if (this.rutaPolyline) {
+        this.map.removeLayer(this.rutaPolyline);
+        this.rutaPolyline = null;
+      }
+
+      // 🟢 Dibujar línea entre paradas
+      if (latlngs.length > 1) {
+        this.rutaPolyline = L.polyline(latlngs, {
+          color: '#000000',
+          weight: 8,
+          opacity: 0.7
+        }).addTo(this.map);
+
+        this.map.fitBounds(this.rutaPolyline.getBounds());
+      }
+
+    }, error => {
+      alert('Error al consultar la ruta');
+    });
+  }
 
 
+
+  get rutaColor(): string {
+    const ruta = this.routesList.find(r => r._id === this.selectedRuta);
+    return ruta?.color || '#ffffff';
+  }
+  
 
 }
